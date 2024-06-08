@@ -24,6 +24,7 @@ from jade_gui.classes.partition import Partition
 from jade_gui.widgets.disk import DiskEntry
 from jade_gui.widgets.partition import PartitionEntry
 from jade_gui.functions.partition_screen import PartitionScreen
+from jade_gui.functions.user_screen import UserScreen
 from jade_gui.functions.summary_screen import SummaryScreen
 from jade_gui.functions.install_screen import InstallScreen
 from jade_gui.functions.finished_screen import FinishedScreen
@@ -61,6 +62,9 @@ class JadeGuiWindow(Gtk.ApplicationWindow):
         self.partition_screen = PartitionScreen(
             window=self, set_valid=self.page_valid, **kwargs
         )
+        self.user_screen = UserScreen(
+            window=self, set_valid=self.page_valid, **kwargs
+        )
         self.welcome_screen = WelcomeScreen(
             window=self,
             set_valid=self.page_valid,
@@ -74,6 +78,7 @@ class JadeGuiWindow(Gtk.ApplicationWindow):
         )
         self.carousel.append(self.welcome_screen)
         self.carousel.append(self.partition_screen)
+        self.carousel.append(self.user_screen)
         # self.carousel.append(self.manual_partition)
         self.carousel.append(self.summary_screen)
         self.carousel.append(self.installer_screen)

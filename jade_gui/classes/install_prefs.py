@@ -28,6 +28,7 @@ class InstallPrefs:
         hostname,
         partition_mode,
         partitions,
+        encryption_password
     ):
         if partition_mode.lower() != "manual":
             self.disk = disk.disk
@@ -36,6 +37,7 @@ class InstallPrefs:
         self.hostname = hostname if len(hostname) != 0 else "blend"
         self.partition_mode = partition_mode
         self.partitions = partitions
+        self.password = encryption_password
         self.is_efi = disks.get_uefi()
         self.bootloader_type = "grub-efi" if self.is_efi else "grub-legacy"
         self.bootloader_location = "/boot/efi/" if self.is_efi else self.disk
@@ -47,6 +49,7 @@ class InstallPrefs:
                 "mode": self.partition_mode,
                 "efi": self.is_efi,
                 "partitions": self.partitions,
+                "password": self.password
             },
             "bootloader": {
                 "type": self.bootloader_type,

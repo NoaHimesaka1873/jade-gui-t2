@@ -72,6 +72,7 @@ class SummaryScreen(JadeScreen, Adw.Bin):
             disk=self.window.partition_screen.selected_partition,
             hostname='blend',
             partition_mode=self.window.partition_mode,
+            encryption_password=self.window.user_screen.password,
             partitions=partitions,
         )
         print(self.installprefs.generate_json())

@@ -28,75 +28,37 @@ from jade_gui.classes.jade_screen import JadeScreen
 class UserScreen(JadeScreen, Adw.Bin):
     __gtype_name__ = "UserScreen"
 
-    fullname_entry = Gtk.Template.Child()
-    username_entry = Gtk.Template.Child()
     password_entry = Gtk.Template.Child()
     password_confirmation = Gtk.Template.Child()
 
-    username = ""
-    fullname = ""
-    sudo_enabled = True
-    root_enabled = True
-    username_filled = False
-    fullname_filled = False
     password_filled = False
     move_to_summary = False
 
+    password = ""
+
     def __init__(self, window, application, **kwargs):
         super().__init__(**kwargs)
+        self.set_valid(True)
         self.window = window
         self.sudo_enabled = True
         self.root_enabled = True
-        self.username_entry.connect("changed", self.username_passes_regex)
-        self.fullname_entry.connect("changed", self.fullname_passes_regex)
         self.password_entry.connect("changed", self.verify_password)
         self.password_confirmation.connect("changed", self.verify_password)
-
-    def fullname_passes_regex(self, widget):
-        input = self.fullname_entry.get_text()
-        print(input)
-        if not len(input.strip()) > 0:
-            print("Invalid fullname!")
-            self.fullname_entry.add_css_class("error")
-            self.fullname_filled = False
-            self.verify_continue()
-        else:
-            print("Valid fullname!")
-            self.fullname_entry.remove_css_class("error")
-            self.fullname_filled = True
-            self.verify_continue()
-            self.fullname = input.strip()
-            self.username_entry.set_text(self.fullname.lower().split()[0])
-
-    def username_passes_regex(self, widget):
-        input = self.username_entry.get_text()
-        print(input)
-        if not re.search("^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$", input) or input == 'blend':
-            print("Invalid username!")
-            self.username_entry.add_css_class("error")
-            self.username_filled = False
-            self.verify_continue()
-        else:
-            print("Valid username!")
-            self.username_entry.remove_css_class("error")
-            self.username_filled = True
-            self.verify_continue()
-            self.username = input
 
     def verify_password(self, widget):
         if (
             self.password_entry.get_text() == self.password_confirmation.get_text()
-            and self.password_entry.get_text().strip()
-            and "'" not in self.password_entry.get_text().strip()
-            and "$" not in self.password_entry.get_text().strip()
-            and len(self.password_entry.get_text().strip()) > 7
+            and (
+                 len(self.password_entry.get_text().strip()) > 7
+                 or self.password_entry.get_text().strip() == ''
+                )
         ):
             self.password_filled = True
             self.verify_continue()
             self.password_confirmation.remove_css_class("error")
             self.password = self.encrypt_password(self.password_entry.get_text())
             self.password = (
-                "'" + self.encrypt_password(self.password_entry.get_text()) + "'"
+                self.encrypt_password(self.password_entry.get_text())
             )
         else:
             self.password_filled = False
@@ -104,7 +66,7 @@ class UserScreen(JadeScreen, Adw.Bin):
             self.password_confirmation.add_css_class("error")
 
     def verify_continue(self):
-        self.set_valid(self.password_filled and self.username_filled and self.fullname_filled)
+        self.set_valid(self.password_filled)
 
     def encrypt_password(self, password):
         return password
