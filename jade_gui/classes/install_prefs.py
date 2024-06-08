@@ -34,7 +34,7 @@ class InstallPrefs:
             self.disk = disk.disk
         else:
             self.disk = ""
-        self.hostname = hostname if len(hostname) != 0 else "blend"
+        self.hostname = hostname if len(hostname) != 0 else "blend-t2"
         self.partition_mode = partition_mode
         self.partitions = partitions
         self.password = encryption_password
@@ -56,6 +56,6 @@ class InstallPrefs:
                 "location": self.bootloader_location,
             },
             "networking": {"hostname": self.hostname, "ipv6": False},
-            "kernel": "linux-zen",
+            "kernel": "linux-xanmod-t2",
         }
         return json.dumps(prefs)
