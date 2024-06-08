@@ -21,6 +21,9 @@ jobs:
         groupadd -r $BUILDGROUP
         useradd $BUILDUSER -g $BUILDGROUP -m
         passwd -d $BUILDUSER
+        echo "[arch-mact2]" >> /etc/pacman.conf
+        echo "SigLevel = Never" >> /etc/pacman.conf
+        echo "Server = https://mirror.funami.tech/arch-mact2/os/x86_64" >> /etc/pacman.conf
         pacman -Syu --noconfirm --needed sudo base-devel git python-yaml
         printf '$BUILDUSER ALL=(ALL) ALL\\n' | tee -a /etc/sudoers
         chown -R $BUILDUSER:$BUILDGROUP ./
